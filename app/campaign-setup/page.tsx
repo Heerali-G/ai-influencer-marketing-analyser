@@ -15,6 +15,40 @@ export default function CampaignSetupPage() {
 
   const canProceed = campaignName.trim() && campaignBudget.trim() && ageGroup.trim() && location.trim() && niche.trim()
 
+const handleSubmit = async () => {
+
+  const campaignData = {
+    campaignName,
+    campaignBudget,
+    ageGroup,
+    location,
+    niche,
+    influencerCount,
+    description
+  }
+
+  try {
+
+    const res = await fetch(
+      "https://influencer-backend-2-isc7.onrender.com/campaign",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(campaignData)
+      }
+    )
+
+    const data = await res.json()
+
+    console.log("Backend Response:", data)
+
+  } catch (error) {
+    console.error("Backend error:", error)
+  }
+}
+
   return (
     <main className="min-h-screen bg-background">
 
@@ -178,16 +212,17 @@ export default function CampaignSetupPage() {
                   <p className="font-semibold text-foreground">{influencerCount}</p>
                 </div>
 
-                <Link
-                  href={canProceed ? `/processing?count=${influencerCount}` : '#'}
-                  onClick={(e) => !canProceed && e.preventDefault()}
-                  className={`w-full py-3 px-2 rounded-lg font-bold text-center transition-all text-sm sm:text-base flex items-center justify-center ${canProceed
-                    ? 'bg-primary text-primary-foreground hover-lift active:scale-95 cursor-pointer shadow-md'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed border border-border/10'
-                    }`}
-                >
-                  Start Analysis
-                </Link>
+                <button
+                onClick={handleSubmit}
+                disabled={!canProceed}
+                className={`w-full py-3 px-2 rounded-lg font-bold text-center transition-all text-sm sm:text-base ${
+                  canProceed
+                    ? 'bg-primary text-primary-foreground hover-lift active:scale-95'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                }`}
+              >
+                Start Analysis
+              </button>
               </div>
             </div>
           </div>
